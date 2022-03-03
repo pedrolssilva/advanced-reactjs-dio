@@ -1,49 +1,46 @@
-import React, { Component} from 'react';
+import React, {useEffect, useState , memo} from 'react';
 
-class Twitter extends Component {
-  state = {
-    tweet: 'tittle',
-  }
-
-  componentDidMount(){
-    const {posts, loading} = this.props;
-    console.log('componentDidMount ', posts);
-    console.log('componentDidMount: loading ', loading);
-  }
-
-  componentDidUpdate(prevProps){
-    const {loading} = this.props;
-    if(this.props.loading !== prevProps.loading){
-      console.log('componentDidUpdate: loading ', loading);
-    }
-  }
-
-  componentWillUnmount(){
-    console.log('componentWillUnmount: It was removed ;[')
-  }
-
-  shouldComponentUpdate(nextProps, nextState){
-    return this.state.tweet !== nextState.tweet || 
-      nextProps.loading !== this.props.loading;
-  }
-
-  tweet = () => {
-    this.setState({
-      tweet: true
-    })
-  }
-
-  render() {
-    const {posts} = this.props;
-    console.log('render ', posts);
-
-    return (
-      <div>
-        <button onClick={this.tweet}>Re render</button>
-       tests
-      </div>
-    )
-  }
+// shouldComponentUpdate
+const areEqual = (prevProps, nextProps) => {
+  return prevProps.loading === nextProps.loading
 }
 
-export default Twitter
+function Twitter(props) {
+  const {loading} = props;
+  const [tweet, setTweet] = useState('title'); 
+
+  // componentDidMount
+  useEffect(() => {
+    const {posts, loading} = props;
+    console.log('componentDidMount ', posts);
+    console.log('componentDidMount: loading ', loading);
+  }, [] )
+
+  // componentDidUpdate
+  useEffect(() => {
+      console.log('componentDidUpdate: loading=', loading);
+  },[loading])
+
+  // componentWillUnmount
+  useEffect(() => {
+    return () => {
+      console.log('componentWillUnmount: It was removed ;[')
+    }
+  },[])
+
+
+  const handleTweet = () => {
+    setTweet('tweet updated')
+  }
+
+  console.log('Tweet updated: ', tweet);
+
+  return (
+    <div>
+      <button onClick={handleTweet}>Re render</button>
+      tests
+    </div>
+  )
+}
+
+export default memo(Twitter, areEqual)
